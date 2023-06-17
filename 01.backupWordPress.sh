@@ -17,7 +17,7 @@ else
   WPCON=${str}
 fi
 str="n"
-echo "OK. I set the variable WPCON to the value of \"${WPCON}\""."
+echo "OK. I set the variable WPCON to the value of \"${WPCON}\"."
 
 # MySQl container name
 
