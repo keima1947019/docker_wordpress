@@ -16,7 +16,6 @@ else
   read str
   WPCON=${str}
 fi
-str="n"
 echo "OK. I set the variable WPCON to the value of \"${WPCON}\"."
 
 # MySQl container name
@@ -33,7 +32,6 @@ else
   read str
   WPCON=${str}
 fi
-str="n"
 
 # MySQL db root password
 
@@ -50,7 +48,6 @@ else
   DBPASS=${str}
   echo "MySQL db root papssword was set as ${DBPASS}."
 fi
-str="n"
 
 # Backup execution
 
