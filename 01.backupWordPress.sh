@@ -28,28 +28,41 @@ setConName(){
   fi
 }
 
-# WordPress container name
+confirm(){
+  echo -n "Are you ready for backup ${CONNAME} ? [y|n]-> "
+  read str
+  if [ "${str}" = "y" ]; then
+    :
+  else
+    while [ ! "${str}" = "y" ]
+      do
+        echo -n "Are you ready for backup ${CONNAME} ? [y|n]-> "
+        read str
+      done
+  fi
+}
 
-WPCON=`docker ps | grep "wordpress" | awk '{print $(NF-n)}'`
-echo "Is the name of wordpress container \"${WPCON}\" ?"
+# WordPress container
+
+CONNAME=`docker ps | grep "wordpress" | awk '{print $(NF-n)}'`
+echo "Is the name of wordpress container \"${CONNAME}\" ?"
 echo -n "If correct, type y, or type anything but y. -> "
 read str
 emptyCheckInputValues
-setConName "wordpress" "WPCON"
+setConName "wordpress"
+confirm
+echo "Backup ${CONNAME} ..."
+docker run --rm --volumes-from ${CONNAME} -v $PWD:/backup busybox tar zcvf /backup/bkup_${CONNAME}.tar.gz.${DATE} /var/www/html > /dev/null
+echo "wordpress backup has been finished!"
 
-echo "OK. I set the variable WPCON to the value of \"${WPCON}\"."
+# MySQl container 
 
-# MySQl container name
-
-DBCON=`docker ps | grep "mysql" | awk '{print $(NF-n)}'`
-echo "Is the name of mysql container ${DBCON} ?"
+CONNAME=`docker ps | grep "mysql" | awk '{print $(NF-n)}'`
+echo "Is the name of mysql container ${CONNAME} ?"
 echo -n "If correct, type y, or type anything but y. -> "
 read str
 emptyCheckInputValues
-setConName "mysql" "DBCON"
-
-# MySQL db root password
-
+setConName "mysql"
 DBPASS=`grep "MYSQL_ROOT_PASSWORD" docker-compose.yml | awk '{print $(NF-n)}'`
 echo "Is MySQL db root password ${DBPASS} ?"
 echo -n "If correct, type y, or type anything but y. -> "
@@ -63,21 +76,8 @@ else
   DBPASS=${str}
   echo "MySQL db root papssword was set as ${DBPASS}."
 fi
-
-# Backup execution
-
-echo -n "Are you ready for backup? [y|n]-> "
-read str
-if [ "${str}" = "y" ]; then
-  :
-else
-  while [ ! "${str}" = "y" ]
-    do
-      echo -n "Are you ready for backup? [y|n]-> "
-      read str
-    done
-fi
-
-docker run --rm --volumes-from $WPCON -v $PWD:/backup busybox tar zcvf /backup/bkup_${WPCON}.tar.gz.${DATE} /var/www/html > /dev/null
-DUMPFILE="bkup_${DBCON}.dump.${DATE}"
-sh -c "docker exec -i ${DBCON} mysqldump -uroot -p${DBPASS} --single-transaction --all-databases > ${DUMPFILE} " > /dev/null
+confirm
+echo "Backup ${CONNAME} ..."
+DUMPFILE="bkup_${CONNAME}.dump.${DATE}"
+sh -c "docker exec -i ${CONNAME} mysqldump -uroot -p${DBPASS} --single-transaction --all-databases > ${DUMPFILE} " > /dev/null
+echo "mysql backup has been finished!"
