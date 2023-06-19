@@ -7,7 +7,7 @@ emptyCheckInputValues(){
     while [ -z "${str}" ]
     do
       echo "You did not input any words."
-      echo -n "If correct, type y, or type anything but y. -> "
+      echo -n "Type \"y\" or \"n\". -> "
       read str
     done
   fi
@@ -22,7 +22,7 @@ setConName(){
       read str
       CONNAME=${str}
       echo "Is the name of $1 container ${CONNAME} ?"
-      echo -n "If correct, type y, or type anything but y. -> "
+      echo -n "Type \"y\" or \"n\". -> "
       read str
     done
   fi
@@ -46,7 +46,7 @@ confirm(){
 
 CONNAME=`docker ps | grep "wordpress" | awk '{print $(NF-n)}'`
 echo "Is the name of wordpress container \"${CONNAME}\" ?"
-echo -n "If correct, type y, or type anything but y. -> "
+echo -n "Type \"y\" or \"n\". -> "
 read str
 emptyCheckInputValues
 setConName "wordpress"
@@ -59,13 +59,13 @@ echo "wordpress backup has been finished!"
 
 CONNAME=`docker ps | grep "mysql" | awk '{print $(NF-n)}'`
 echo "Is the name of mysql container ${CONNAME} ?"
-echo -n "If correct, type y, or type anything but y. -> "
+echo -n "Type \"y\" or \"n\". -> "
 read str
 emptyCheckInputValues
 setConName "mysql"
 DBPASS=`grep "MYSQL_ROOT_PASSWORD" docker-compose.yml | awk '{print $(NF-n)}'`
 echo "Is MySQL db root password ${DBPASS} ?"
-echo -n "If correct, type y, or type anything but y. -> "
+echo -n "Type \"y\" or \"n\". -> "
 read str
 if [ "${str}" = "y" ]; then
   :
