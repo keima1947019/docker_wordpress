@@ -63,7 +63,7 @@ echo -n "Type \"y\" or \"n\". -> "
 read str
 emptyCheckInputValues
 setConName "mysql"
-DBPASS=`grep "MYSQL_ROOT_PASSWORD" docker-compose.yml | awk '{print $(NF-n)}'`
+DBPASS=`grep "MYSQL_ROOT_PASSWORD" docker-compose.yml | awk '{print $(NF-n)}' | xargs echo | awk '{print$1}'`
 echo "Is MySQL db root password ${DBPASS} ?"
 echo -n "Type \"y\" or \"n\". -> "
 read str
