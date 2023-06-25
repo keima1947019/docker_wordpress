@@ -44,7 +44,7 @@ confirm(){
 
 # WordPress container
 
-CONNAME=`docker ps | grep "wordpress" | awk '{print $(NF-n)}'`
+CONNAME=`docker ps | grep "wordpress" | awk '{print $(NF-n)}' | xargs echo | awk '{print$1}'`
 echo "Is the name of wordpress container \"${CONNAME}\" ?"
 echo -n "Type \"y\" or \"n\". -> "
 read str
@@ -57,7 +57,7 @@ echo "wordpress backup has been finished!"
 
 # MySQl container 
 
-CONNAME=`docker ps | grep "mysql" | awk '{print $(NF-n)}'`
+CONNAME=`docker ps | grep "mysql" | awk '{print $(NF-n)}' | xargs echo | awk '{print$1}'`
 echo "Is the name of mysql container ${CONNAME} ?"
 echo -n "Type \"y\" or \"n\". -> "
 read str
