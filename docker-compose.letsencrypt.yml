@@ -4,7 +4,6 @@ services:
 
   web_4_certbot:
     container_name: web_4_certbot
-    #image: nginx:1.19.2-alpine
     image: nginx:latest
     restart: always
     volumes:
