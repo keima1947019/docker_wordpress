@@ -1,10 +1,5 @@
-echo ""
-docker-compose exec kanepon apachectl -v
-echo ""
-docker-compose exec kanepon php -v
-echo ""
-docker-compose exec kanepon-db mysql --version
-echo ""
-docker-compose exec prx nginx -v
-echo ""
-
+WPCON="<name of wordpress container>"
+DBCON="<name of mysql container>"
+docker exec -i $WPCON apachectl -v
+docker exec -i $WPCON php -v
+docker exec -i $DBCON mysql --version
