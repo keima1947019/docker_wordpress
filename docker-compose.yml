@@ -1,51 +1,48 @@
 version: '3'
 services:
 
-  kanepon-db:
+  wordpress-db:
     image: mysql:latest
     command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
-    container_name: kanepon-db
     volumes:
-      - ./kanepon-db:/var/lib/mysql
+      - ./wordpress-db:/var/lib/mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: A3Q30sMC9O9AVHNH
-      MYSQL_DATABASE: hSk5rr9V73IocAkD
-      MYSQL_USER: 99RtKjSybxFVFjqh
-      MYSQL_PASSWORD: sbclpjupUHczoS4s
+      MYSQL_ROOT_PASSWORD: "<mysql root password strings>"
+      MYSQL_DATABASE: "<mysql database name>"
+      MYSQL_USER: "<mysql username of database>"
+      MYSQL_PASSWORD: "<mysql password strings of user level priviledge>"
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     ports:
       - 3306
 
-  kanepon:
+  wordpress:
     image: wordpress:php8.0-apache
-    container_name: kanepon
     depends_on:
-      - kanepon-db
+      - wordpress-db
     restart: always
     volumes:
-      - ./kanepon/html:/var/www/html
+      - ./wordpress/html:/var/www/html
     environment:
-      VIRTUAL_HOST: kanepon
-      WORDPRESS_DB_HOST: kanepon-db:3306
-      WORDPRESS_DB_USER: 99RtKjSybxFVFjqh
-      WORDPRESS_DB_PASSWORD: sbclpjupUHczoS4s
-      WORDPRESS_DB_NAME: hSk5rr9V73IocAkD
+      VIRTUAL_HOST: "<FQDN>"
+      WORDPRESS_DB_HOST: wordpress-db:3306
+      WORDPRESS_DB_USER: "<mysql username of database>"
+      WORDPRESS_DB_PASSWORD: "<mysql password strings of user level priviledge>"
+      WORDPRESS_DB_NAME: "<mysql database name>"
     ports:
       - 80
 
-  prx:
+  proxy:
     image: nginx:latest
-    container_name: prx
     ports:
       - 443:443
       - 80:80
     depends_on:
-      - kanepon
+      - wordpress
     volumes:
-      - ./prx/nginx.conf:/etc/nginx/nginx.conf
-      - ./prx/default.conf:/etc/nginx/conf.d/default.conf
-      - ./prx/dhparam.pem:/var/lib/ssl-proxy/dhparam.pem
-      - ./prx/crt/kanepon.com.crt:/var/lib/certificate/kanepon.com.crt
-      - ./prx/crt/kanepon.com.key:/var/lib/certificate/kanepon.com.key
+      - ./proxy/nginx.conf:/etc/nginx/nginx.conf
+      - ./proxy/default.conf:/etc/nginx/conf.d/default.conf
+      - ./proxy/dhparam.pem:/var/lib/ssl-proxy/dhparam.pem
+      - ./proxy/crt/<certificate name>:/var/lib/certificate/<certificate name>
+      - ./proxy/crt/<private key name>:/var/lib/certificate/<private key name>
 
